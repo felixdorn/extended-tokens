@@ -156,6 +156,10 @@ final class ExtendedTokens
             [$previousType, $previousValue] = $tokens[--$valuableIndex];
         }
 
+        if ($previousType === T_IMPLEMENTS || $previousType === T_EXTENDS || $previousType === T_USE) {
+            return [T_CLASS_NAME, $token[1]];
+        }
+
         if ($previousType === T_FUNCTION) {
             return [T_FUNCTION_NAME, $token[1]];
         }
