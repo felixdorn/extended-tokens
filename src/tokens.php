@@ -42,4 +42,8 @@ if (!defined('T_REF')) {
 if (!defined('T_NAMESPACE_PART')) {
     define('T_NAMESPACE_PART', 1010);
 }
+
+if (!defined('T_NEGATION')) {
+    define('T_NEGATION', 1011);
+}
 // @codeCoverageIgnoreEnd

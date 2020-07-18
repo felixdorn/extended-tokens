@@ -86,15 +86,7 @@ it('can replace concatenation . by T_CONCAT', function () {
 
     assertEquals([T_CONCAT, '.'], $tokens[3]);
 });
-it('defines T_* constants', function () {
-    assertTrue(defined('T_EQUAL'));
-    assertTrue(defined('T_CONCAT'));
-    assertTrue(defined('T_FUNCTION_NAME'));
-    assertTrue(defined('T_CLASS_NAME'));
-    assertTrue(defined('T_VARIABLE_TYPE'));
-    assertTrue(defined('T_TRUE'));
-    assertTrue(defined('T_FALSE'));
-});
+
 it('can replace T_STRING by T_VARIABLE_TYPE in short closures', function () {
     $sample = '<?php fn (object $a): B => 4';
     $tokens = (new ExtendedTokens())->parse($sample);

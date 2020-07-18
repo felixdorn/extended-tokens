@@ -94,5 +94,11 @@ function (int &$index) {}
 ```
 * `&` will be a T_REF
 
+### T_NEGATION
+```php
+!true;
+```
+* `!` will be a T_NEGATION 
+
 ## Known issues
-* Namespaces does not works well with T_CLASS_NAME.
+* Namespaces don't work well with T_CLASS_NAME.

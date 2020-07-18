@@ -136,6 +136,9 @@ final class ExtendedTokens
         if ($token === '&') {
             return [T_REF, '&'];
         }
+        if ($token === '!') {
+            return [T_NEGATION, '!'];
+        }
         if (is_string($token)) {
             return [-1, $token];
         }
