@@ -1,5 +1,5 @@
 {
-    "name": "delight/extended-tokens",
+    "name": "delights/extended-tokens",
     "description": "Facilitate PHP code highlighting by changing T_STRING tokens to a more accurate representation",
     "keywords": [
         "php",
