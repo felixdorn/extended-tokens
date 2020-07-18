@@ -176,12 +176,12 @@ final class ExtendedTokens
             return [T_CLASS_NAME, $token[1]];
         }
 
-        if ($previousValue === '->' && $tokens[$valuableIndex + 2][1] !== '(') {
-            return [T_VARIABLE, $token[1]];
-        }
+        if ($previousValue === '->') {
+            if (($tokens[$index + 1][1] ?? '') === '(') {
+                return [T_FUNCTION_NAME, $token[1]];
+            }
 
-        if ($previousValue === '->' && $tokens[$valuableIndex + 2][1] === '(') {
-            return [T_FUNCTION_NAME, $token[1]];
+            return [T_VARIABLE, $token[1]];
         }
 
         if ($token[1] === 'true') {
