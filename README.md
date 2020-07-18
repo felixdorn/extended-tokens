@@ -1,5 +1,9 @@
 # Extended Tokens
 
+```
+composer require delight/extended-tokens
+```
+
 This package is meant to facilitate PHP code highlighting by changing T_STRING tokens to a more accurate representation, like T_CLASS_NAME.
 
 PHP ships by default with a Parser for PHP via the method `token_get_all`
