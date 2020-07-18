@@ -111,6 +111,17 @@ it('can replace a whole namespace by T_FULL_NAMESPACE', function () {
     assertEquals([T_NAMESPACE_PART, 'Some'], $tokens[3]);
     assertEquals([T_NAMESPACE_PART, 'OtherNamespace'], $tokens[5]);
 });
+it('can make a difference between a property and a method', function () {
+    $sample = '<?php class A {} $b = new A; $b->a';
+    $et = new ExtendedTokens();
+    $tokens = $et->parse($sample);
+    assertEquals([T_VARIABLE, 'a'], $tokens[19]);
+
+    $sample = '<?php class A {} $b = new A; $b->a()';
+    $et = new ExtendedTokens();
+    $tokens = $et->parse($sample);
+    assertEquals([T_FUNCTION_NAME, 'a'], $tokens[19]);
+});
 it('can replace T_STRING by T_VARIABLE_TYPE with the full namespace', function () {
     $sample = '<?php function (Hello\World $a, string $b): int {}';
     $tokens = (new ExtendedTokens())->parse($sample);
