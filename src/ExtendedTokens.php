@@ -199,7 +199,7 @@ final class ExtendedTokens
         }
 
         // @codeCoverageIgnoreStart
-        throw ShouldNotHappen::notConvertedStringToken($token);
+        return $token;
         // @codeCoverageIgnoreEnd
     }
 

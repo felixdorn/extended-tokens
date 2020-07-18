@@ -104,3 +104,18 @@ it('can replace T_STRING by T_VARIABLE_TYPE in short closures', function () {
     $tokens = (new ExtendedTokens())->parse($sample);
     assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[4]);
 });
+it('can replace a whole namespace by T_FULL_NAMESPACE', function () {
+    $sample = '<?php namespace Some\OtherNamespace;';
+    $tokens = (new ExtendedTokens())->parse($sample);
+
+    assertEquals([T_NAMESPACE_PART, 'Some'], $tokens[3]);
+    assertEquals([T_NAMESPACE_PART, 'OtherNamespace'], $tokens[5]);
+});
+it('can replace T_STRING by T_VARIABLE_TYPE with the full namespace', function () {
+    $sample = '<?php function (Hello\World $a, string $b): int {}';
+    $tokens = (new ExtendedTokens())->parse($sample);
+
+    assertEquals([T_NAMESPACE_PART, 'Hello'], $tokens[4]);
+    assertEquals([T_NS_SEPARATOR, '\\'], $tokens[5]);
+    assertEquals([T_CLASS_NAME, 'World'], $tokens[6]);
+})->skip();

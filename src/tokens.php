@@ -38,4 +38,8 @@ if (!defined('T_FALSE')) {
 if (!defined('T_REF')) {
     define('T_REF', 1009);
 }
+
+if (!defined('T_NAMESPACE_PART')) {
+    define('T_NAMESPACE_PART', 1010);
+}
 // @codeCoverageIgnoreEnd
