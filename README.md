@@ -86,10 +86,13 @@ function world(string $name): World {}
 true && false;
 ```
 * `true` will be a T_TRUE
-* `false` will be a T_FALSE
+* `false` will be a T_FALSEs
 
 ### T_REF
 ```php
 function (int &$index) {}
 ```
 * `&` will be a T_REF
+
+## Known issues
+* Namespaces does not works well with T_CLASS_NAME.
