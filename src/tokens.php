@@ -34,4 +34,8 @@ if (!defined('T_TRUE')) {
 if (!defined('T_FALSE')) {
     define('T_FALSE', 1008);
 }
+
+if (!defined('T_REF')) {
+    define('T_REF', 1009);
+}
 // @codeCoverageIgnoreEnd

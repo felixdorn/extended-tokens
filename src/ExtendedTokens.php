@@ -133,6 +133,9 @@ final class ExtendedTokens
         if ($token === '=') {
             return [T_EQUAL, '='];
         }
+        if ($token === '&') {
+            return [T_REF, '&'];
+        }
         if (is_string($token)) {
             return [-1, $token];
         }
@@ -147,10 +150,10 @@ final class ExtendedTokens
         // We know that there is always at least one token before a T_STRING token
         // ex: class {T_STRING} {}, function {T_STRING}() {}
         [$previousType, $previousValue] = $tokens[$index - 1];
-        $lastValuableTokenIndex         = $index;
+        $valuableIndex                  = $index;
 
         while ($previousType === T_WHITESPACE) {
-            [$previousType, $previousValue] = $tokens[--$lastValuableTokenIndex];
+            [$previousType, $previousValue] = $tokens[--$valuableIndex];
         }
 
         if ($previousType === T_FUNCTION) {
@@ -185,7 +188,8 @@ final class ExtendedTokens
             $previousValue === ':' ||
             $previousValue === ',' ||
             $previousValue === T_NS_SEPARATOR ||
-            ($previousValue === '(' && $tokens[$lastValuableTokenIndex - 4][0] === T_FUNCTION)
+            ($previousValue === '(' && $this->getLastKeyword($valuableIndex, $tokens)[0] === T_FUNCTION) ||
+            ($previousValue === '(' && $this->getLastKeyword($valuableIndex, $tokens)[0] === T_FN)
         ) {
             if (in_array($token[1], static::$types, true)) {
                 return [T_VARIABLE_TYPE, $token[1]];
@@ -197,5 +201,16 @@ final class ExtendedTokens
         // @codeCoverageIgnoreStart
         throw ShouldNotHappen::notConvertedStringToken($token);
         // @codeCoverageIgnoreEnd
+    }
+
+    public function getLastKeyword(int $index, array $tokens): array
+    {
+        $current = $tokens[$index];
+
+        while (!in_array($current[0], self::$keywords, true)) {
+            $current = $tokens[--$index];
+        }
+
+        return $tokens[$index];
     }
 }

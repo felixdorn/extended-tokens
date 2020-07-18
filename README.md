@@ -87,3 +87,9 @@ true && false;
 ```
 * `true` will be a T_TRUE
 * `false` will be a T_FALSE
+
+### T_REF
+```php
+function (int &$index) {}
+```
+* `&` will be a T_REF

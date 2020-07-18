@@ -17,6 +17,19 @@ it('can parse', function () {
         [-1, ';'],
     ], $tokens);
 });
+it('can replace T_STRING by T_VARIABLE_TYPE', function () {
+    $sample = '<?php function a(B $b): object {}';
+    $et = new ExtendedTokens();
+    $tokens = $et->parse($sample);
+    assertEquals([T_CLASS_NAME, 'B'], $tokens[5]);
+    assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[11]);
+
+    $sample = '<?php function a                           (B $b): object {}';
+    $et = new ExtendedTokens();
+    $tokens = $et->parse($sample);
+    assertEquals([T_CLASS_NAME, 'B'], $tokens[6]);
+    assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[12]);
+});
 it('can replace T_STRING by T_CLASS_NAME when instantiating a class', function () {
     $sample = '<?php class A {} $b = new A;';
     $et = new ExtendedTokens();
@@ -58,14 +71,6 @@ it('can replace $object->{T_STRING} by T_VARIABLE', function () {
     $tokens = $et->parse($sample);
     assertEquals([T_VARIABLE, 'a'], $tokens[19]);
 });
-it('can replace T_STRING by T_VARIABLE_TYPE', function () {
-    $sample = '<?php function a(B $b): object {}';
-    $et = new ExtendedTokens();
-    $tokens = $et->parse($sample);
-
-    assertEquals([T_CLASS_NAME, 'B'], $tokens[5]);
-    assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[11]);
-});
 it('can replace true/false by T_TRUE and T_FALSE', function () {
     $sample = '<?php true && false;';
     $et = new ExtendedTokens();
@@ -90,5 +95,12 @@ it('defines T_* constants', function () {
     assertTrue(defined('T_TRUE'));
     assertTrue(defined('T_FALSE'));
 });
+it('can replace T_STRING by T_VARIABLE_TYPE in short closures', function () {
+    $sample = '<?php fn (object $a): B => 4';
+    $tokens = (new ExtendedTokens())->parse($sample);
+    assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[4]);
 
-// TODO: Code coverage, publish
+    $sample = '<?php fn (object &$a): B => 4';
+    $tokens = (new ExtendedTokens())->parse($sample);
+    assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[4]);
+});
