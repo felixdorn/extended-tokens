@@ -15,11 +15,9 @@ This function returns an array of tokens that looks like this :
 ```
 > Note: This library returns tokens without offset.
 
-Sometimes for tokens like `{`, ';', it just returns the literal string, not an array. 
+Sometimes for tokens like `{`, `;`, it just returns the literal string, not an array. 
 
 This library change this, everything is an array, even those useless string.
-
-The parser also use T_STRING for `class {T_STRING}`, `function {T_STRING}`... this library change this.  
 
 ## Usage
 
@@ -76,7 +74,7 @@ $a->b;
 ```php
 function world(string $name): World {}
 ```
-* `string` will be a T_TOKEN_TYPE
+* `string` will be a T_VARIABLE_TYPE
 * `World` will be a T_CLASS_NAME
 
 ### T_TRUE and T_FALSE
