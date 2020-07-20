@@ -6,7 +6,7 @@ namespace Delight\ExtendedTokens;
 
 final class ExtendedTokens
 {
-    public static array $keywords = [
+    public static $keywords = [
         T_ABSTRACT,
         T_ARRAY,
         T_FOREACH,
@@ -81,7 +81,7 @@ final class ExtendedTokens
         T_YIELD,
         T_YIELD_FROM,
     ];
-    public static array $casts = [
+    public static $casts = [
         T_BOOL_CAST,
         T_ARRAY_CAST,
         T_DOUBLE_CAST,
@@ -90,7 +90,7 @@ final class ExtendedTokens
         T_OBJECT_CAST,
         T_STRING_CAST,
     ];
-    public static array $constants = [
+    public static $constants = [
         T_CLASS_C,
         T_METHOD_C,
         T_NS_C,
@@ -100,9 +100,9 @@ final class ExtendedTokens
         T_FILE,
         T_LINE,
     ];
-    public static array $types = ['string', 'int', 'float', 'object', 'callable', 'array', 'iterable', 'bool', 'self'];
+    public static $types = ['string', 'int', 'float', 'object', 'callable', 'array', 'iterable', 'bool', 'self'];
 
-    public function parse(string $code): array
+    public function parse(string $code, bool $withOffsets = false): array
     {
         $tokens = [];
         $parsed = token_get_all(trim($code));
@@ -116,10 +116,18 @@ final class ExtendedTokens
                 continue;
             }
 
-            $tokens[$k] = $this->processStringToken($token, $k, $tokens);
+            [$kind, $value] = $this->processStringToken($token, $k, $tokens);
+
+            $tokens[$k] = [$kind, $value, $k];
         }
 
-        return $tokens;
+        return array_map(function ($token) use ($withOffsets) {
+            if ($withOffsets) {
+                return $token;
+            }
+
+            return [$token[0], $token[1]];
+        }, $this->withOptimizedNamespace($tokens));
     }
 
     /**
@@ -143,9 +151,7 @@ final class ExtendedTokens
             return [-1, $token];
         }
 
-        [$kind, $value] = $token;
-
-        return [$kind, $value];
+        return $token;
     }
 
     private function processStringToken(array $token, int $index, array $tokens): array
@@ -196,6 +202,14 @@ final class ExtendedTokens
         }
 
         if (
+            $previousType === T_NAMESPACE ||
+            $previousType === T_NS_SEPARATOR ||
+            ($this->getNextToken($valuableIndex, $tokens)[1] === '\\')
+        ) {
+            return [T_NAMESPACE_PART, $token[1]];
+        }
+
+        if (
             $previousValue === ':' ||
             $previousValue === ',' ||
             $previousValue === T_NS_SEPARATOR ||
@@ -209,9 +223,24 @@ final class ExtendedTokens
             return [T_CLASS_NAME, $token[1]];
         }
 
+        if ($token[0] === T_VARIABLE && ($previousType === T_FUNCTION || $previousType === T_FN)) {
+            return [T_PARAMETER, $token[1]];
+        }
+
         // @codeCoverageIgnoreStart
         return $token;
         // @codeCoverageIgnoreEnd
+    }
+
+    public function getNextToken(int $index, array $tokens): array
+    {
+        $current = $tokens[++$index];
+
+        while ($current[0] === T_WHITESPACE) {
+            $current = $tokens[++$index];
+        }
+
+        return $current;
     }
 
     public function getLastKeyword(int $index, array $tokens): array
@@ -223,5 +252,65 @@ final class ExtendedTokens
         }
 
         return $tokens[$index];
+    }
+
+    private function withOptimizedNamespace(array $tokens): array
+    {
+        $namespaces = array_filter($tokens, function ($token) {
+            return in_array($token[0], [T_NS_SEPARATOR, T_NAMESPACE_PART], true);
+        });
+        $namespaces = array_values($namespaces);
+        $separated  = function (int $key, array $namespaces) {
+            if (!array_key_exists($key - 1, $namespaces)) {
+                return true;
+            }
+
+            return !($namespaces[$key][0] !== T_NS_SEPARATOR && $namespaces[$key - 1][0] !== T_NS_SEPARATOR);
+        };
+
+        $chunks     = [];
+        $chunkStart = 0;
+
+        foreach (array_keys($namespaces) as $k) {
+            if (!$separated($k, $namespaces)) {
+                $chunks[] = array_slice($namespaces, $chunkStart, $k);
+
+                $chunkStart = $k;
+            }
+
+            if ($k === count($namespaces) - 1) {
+                $chunks[] = array_slice($namespaces, $chunkStart, $k);
+
+                $chunkStart = $k;
+            }
+        }
+
+        $chunks = array_map(function ($chunk) {
+            return [
+                'value' => implode('', array_map(function ($token) {
+                    return $token[1];
+                }, $chunk)),
+                'replaces' => [$chunk[0][2], $chunk[array_key_last($chunk)][2]],
+            ];
+        }, $chunks);
+
+        foreach ($chunks as $chunk) {
+            [$from, $to]    = $chunk['replaces'];
+            $namespaceStart = -1;
+            foreach (array_keys($tokens) as $k) {
+                if ($k >= $from && $k <= $to) {
+                    if ($namespaceStart === -1) {
+                        $namespaceStart = $k;
+                    }
+
+                    unset($tokens[$k]);
+                }
+            }
+
+            $tokens[$namespaceStart] = [T_FULL_NAMESPACE, $chunk['value']];
+        }
+        ksort($tokens);
+
+        return array_values($tokens);
     }
 }

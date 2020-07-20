@@ -46,4 +46,16 @@ if (!defined('T_NAMESPACE_PART')) {
 if (!defined('T_NEGATION')) {
     define('T_NEGATION', 1011);
 }
+
+if (!defined('T_PARAMETER')) {
+    define('T_PARAMETER', 1012);
+}
+
+if (!defined('T_FULL_NAMESPACE')) {
+    define('T_FULL_NAMESPACE', 1013);
+}
+
+if (!defined('T_END_NAMESPACE')) {
+    define('T_END_NAMESPACE', 1014);
+}
 // @codeCoverageIgnoreEnd

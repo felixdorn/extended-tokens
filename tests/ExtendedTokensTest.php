@@ -2,6 +2,12 @@
 
 use Delight\ExtendedTokens\ExtendedTokens;
 
+it('can return a full namespace as one token', function () {
+    $sample = '<?php namespace A\B\C; namespace N\A;';
+    $tokens = (new ExtendedTokens())->parse($sample);
+
+    assertEquals([T_FULL_NAMESPACE, 'A\B\C'], $tokens[3]);
+});
 it('can parse', function () {
     $et = new Delight\ExtendedTokens\ExtendedTokens();
 
@@ -70,7 +76,7 @@ it('can replace $object->{T_STRING} by T_VARIABLE', function () {
     $et = new ExtendedTokens();
     $tokens = $et->parse($sample);
     assertEquals([T_VARIABLE, 'a'], $tokens[19]);
-})->skip();
+});
 it('can replace true/false by T_TRUE and T_FALSE', function () {
     $sample = '<?php true && false;';
     $et = new ExtendedTokens();
@@ -96,6 +102,7 @@ it('can replace T_STRING by T_VARIABLE_TYPE in short closures', function () {
     $tokens = (new ExtendedTokens())->parse($sample);
     assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[4]);
 });
+
 it('can make a difference between a property and a method', function () {
     $sample = '<?php class C {} $b = new C; $b->a()';
     $et = new ExtendedTokens();
