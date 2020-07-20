@@ -1,5 +1,6 @@
 # rector.yaml
 parameters:
+    php_version_features: '7.3'
     sets:
         - 'action-injection-to-constructor-injection'
         - 'array-str-functions-to-static-call'

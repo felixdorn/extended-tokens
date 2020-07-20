@@ -17,10 +17,8 @@ This function returns an array of tokens that looks like this :
     42 // offset
 ];
 ```
-> Note: This library returns tokens without offset.
 
-Sometimes for tokens like `{`, `;`, it just returns the literal string, not an array. 
-
+Sometimes for tokens like `{`, `;`, it just returns the literal string, not an array. g
 This library change this, everything is an array, even those useless string.
 
 ## Usage
@@ -31,6 +29,12 @@ use Delight\ExtendedTokens\ExtendedTokens;
 $parser = new ExtendedTokens();
 $tokens = $parser->parse('code');
 ```
+
+### T_FULL_NAMESPACE
+```php
+namespace A\B\C;
+```
+* `A\B\C` will be a T_FULL_NAMESPACE
 
 ### T_CLASS_NAME
 ```php
@@ -86,7 +90,7 @@ function world(string $name): World {}
 true && false;
 ```
 * `true` will be a T_TRUE
-* `false` will be a T_FALSEs
+* `false` will be a T_FALSE
 
 ### T_REF
 ```php
@@ -99,6 +103,3 @@ function (int &$index) {}
 !true;
 ```
 * `!` will be a T_NEGATION 
-
-## Known issues
-* Namespaces don't work well with T_CLASS_NAME.

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Delight\ExtendedTokens;
 
-final class ExtendedTokens
+class ExtendedTokens
 {
     public static $keywords = [
         T_ABSTRACT,

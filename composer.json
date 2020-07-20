@@ -16,7 +16,8 @@
         }
     ],
     "require": {
-        "php": "^7.3"
+        "php": "^7.3",
+        "delights/pest-plugin-auto-helpers": "dev-master"
     },
     "require-dev": {
         "pestphp/pest": "^0.2.2",
