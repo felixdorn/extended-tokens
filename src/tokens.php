@@ -59,7 +59,6 @@ if (!defined('T_END_NAMESPACE')) {
     define('T_END_NAMESPACE', 1014);
 }
 
-
 if (!defined('T_FN')) {
     define('T_FN', 343);
 }

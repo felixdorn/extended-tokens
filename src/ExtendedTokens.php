@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Delight\ExtendedTokens;
 
-class ExtendedTokens
+final class ExtendedTokens
 {
+    /** @var int[] */
     public static $keywords = [
         T_ABSTRACT,
         T_ARRAY,
@@ -81,15 +82,7 @@ class ExtendedTokens
         T_YIELD,
         T_YIELD_FROM,
     ];
-    public static $casts = [
-        T_BOOL_CAST,
-        T_ARRAY_CAST,
-        T_DOUBLE_CAST,
-        T_INT_CAST,
-        T_UNSET_CAST,
-        T_OBJECT_CAST,
-        T_STRING_CAST,
-    ];
+    /** @var int[] */
     public static $constants = [
         T_CLASS_C,
         T_METHOD_C,
@@ -100,6 +93,17 @@ class ExtendedTokens
         T_FILE,
         T_LINE,
     ];
+    /** @var int[] */
+    public static $casts = [
+        T_BOOL_CAST,
+        T_ARRAY_CAST,
+        T_DOUBLE_CAST,
+        T_INT_CAST,
+        T_UNSET_CAST,
+        T_OBJECT_CAST,
+        T_STRING_CAST,
+    ];
+    /** @var string[] */
     public static $types = ['string', 'int', 'float', 'object', 'callable', 'array', 'iterable', 'bool', 'self'];
 
     public function parse(string $code, bool $withOffsets = false): array
@@ -256,11 +260,11 @@ class ExtendedTokens
 
     private function withOptimizedNamespace(array $tokens): array
     {
-        $namespaces = array_filter($tokens, function ($token) {
+        $namespaces = array_filter($tokens, function ($token): bool {
             return in_array($token[0], [T_NS_SEPARATOR, T_NAMESPACE_PART], true);
         });
         $namespaces = array_values($namespaces);
-        $separated  = function (int $key, array $namespaces) {
+        $separated  = function (int $key, array $namespaces): bool {
             if (!array_key_exists($key - 1, $namespaces)) {
                 return true;
             }
