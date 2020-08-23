@@ -102,7 +102,7 @@ it('can replace T_STRING by T_VARIABLE_TYPE in short closures', function () {
     $tokens = (new ExtendedTokens())->parse($sample);
     assertEquals([T_VARIABLE_TYPE, 'object'], $tokens[4]);
 })->skip(function () {
-    return strpos(PHP_VERSION, '7.4') === 0;
+    return strpos(PHP_VERSION, '7.4') !== 0;
 });
 
 it('can make a difference between a property and a method', function () {
