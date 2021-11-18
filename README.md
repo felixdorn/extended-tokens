@@ -1,3 +1,5 @@
+**DEPRECATED use [felixdorn/tin](https://github.com/felixdorn/tin) instead, the code was crap, please don't look at it. Also the T_FULL_NAMESPACE never worked well and PHP parses namespaces as one token now.
+
 # Extended Tokens
 
 ```
